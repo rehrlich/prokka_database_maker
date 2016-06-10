@@ -1,0 +1,1 @@
+This is a tool for creating genus databases for Prokka.  The input is an ncbi taxid.  This program finds the taxid in the ncbi taxonomy tree, identifies all descendants, downloads the associated genome files from ncbi, and creates a Prokka genus database.  
