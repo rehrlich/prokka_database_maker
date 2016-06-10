@@ -4,7 +4,7 @@ from collections import defaultdict
 class TaxonomyTree:
     def __init__(self):
         self.children = defaultdict(list)
-        self.nodes_file = '/opt/users/rachel/apps/taxator_refs/taxdump/nodes.dmp'
+        self.nodes_file = 'refs/taxonomy_nodes.txt'
         self.parse_tree()
 
     def parse_tree(self):
