@@ -61,7 +61,8 @@ def main():
     for line, genome in filtered_genomes.iterrows():
         dl = NcbiDownload(re.search('(genomes.*)', genome.ftp_path).group(1),
                           args.outdir + '/' + genome['# assembly_accession'])
-        dl.download(ftp)
+        #dl.download(ftp)
+        dl.calc_checksum()
         break
     NcbiDownload.logout(ftp)
 
