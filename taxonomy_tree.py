@@ -22,4 +22,4 @@ class TaxonomyTree:
             consistent_taxa.add(curr)
             all_children = all_children.union(self.children[curr])
 
-        return consistent_taxa
+        return {int(x) for x in consistent_taxa}
