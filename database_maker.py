@@ -2,7 +2,7 @@
 
 import argparse
 import os
-import pandas as pd
+from assembly_summary import AssemblySummary
 from taxonomy_tree import TaxonomyTree
 from ncbi_download import NcbiDownload
 from ftp_utils import FtpUtils
@@ -41,17 +41,6 @@ def make_args():
     return parser.parse_args()
 
 
-def filter_genomes(filtered_genomes, target_taxa):
-    filtered_genomes = filtered_genomes[
-        filtered_genomes['assembly_level'] == 'Complete Genome']
-    filtered_genomes = filtered_genomes[
-        filtered_genomes['version_status'] == 'latest']
-    filtered_genomes = filtered_genomes[
-        filtered_genomes['taxid'].isin(target_taxa) | filtered_genomes[
-            'species_taxid'].isin(target_taxa)]
-    return filtered_genomes
-
-
 def make_database(gbffs, outdir, genus_db_path, name):
 
     call(['mkdir', '-p', outdir])
@@ -79,17 +68,14 @@ def make_database(gbffs, outdir, genus_db_path, name):
 def main():
     args = make_args()
     ftp = FtpUtils.login()
+    
     taxa_tree = TaxonomyTree(args.outdir + '/taxonomy', ftp)
-
     target_taxa = set()
     for taxid in args.taxid:
         target_taxa.update(taxa_tree.get_consistent_below(str(taxid)))
 
-    all_genomes = pd.read_csv('refs/assembly_summary.txt',
-                              sep='\t', skiprows=1)
-
-    filtered_genomes = filter_genomes(all_genomes, target_taxa)
-
+    all_genomes = AssemblySummary(args.outdir, ftp)
+    filtered_genomes = all_genomes.filter_genomes(target_taxa)
 
     gbffs = list()
     for line, genome in filtered_genomes.iterrows():
@@ -100,7 +86,9 @@ def main():
         dl.unzip_gbff()
         gbffs.append(dl.gbff)
         break
+
     FtpUtils.logout(ftp)
+
     make_database(gbffs, args.outdir + '/pre_db_files', args.db_dir, args.name)
 
 

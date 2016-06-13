@@ -12,7 +12,7 @@ class TaxonomyTree:
         self.parse_tree()
 
     def get_nodes_file(self, ftp):
-        ftp.cwd('pub/taxonomy')
+        ftp.cwd('/pub/taxonomy')
 
         listing = []
         ftp.retrlines("LIST", listing.append)
@@ -25,7 +25,7 @@ class TaxonomyTree:
                 local_file = self.outdir + '/' + ncbi_filename
                 with open(local_file, "wb") as lf:
                     ftp.retrbinary("RETR " + ncbi_filename, lf.write, 8*1024)
-                    
+
         FtpUtils.calc_checksum(self.outdir + '/taxdump.tar.gz.md5', self.outdir)
         call(['tar', '-xzf', self.outdir + '/taxdump.tar.gz', '-C', self.outdir])
 
