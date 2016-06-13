@@ -4,6 +4,8 @@ import argparse
 import os
 import pandas as pd
 from taxonomy_tree import TaxonomyTree
+from ncbi_download import NcbiDownload
+import re
 
 
 def make_args():
@@ -53,6 +55,15 @@ def main():
                               sep='\t', skiprows=1)
 
     filtered_genomes = filter_genomes(all_genomes, target_taxa)
+
+    ftp = NcbiDownload.login()
+
+    for line, genome in filtered_genomes.iterrows():
+        dl = NcbiDownload(re.search('(genomes.*)', genome.ftp_path).group(1),
+                          args.outdir + '/' + genome['# assembly_accession'])
+        dl.download(ftp)
+        break
+    NcbiDownload.logout(ftp)
 
     print(filtered_genomes.shape)
 
