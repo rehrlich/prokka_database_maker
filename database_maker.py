@@ -6,6 +6,7 @@ import pandas as pd
 from taxonomy_tree import TaxonomyTree
 from ncbi_download import NcbiDownload
 import re
+from subprocess import Popen, PIPE, call
 
 
 def make_args():
@@ -20,6 +21,9 @@ def make_args():
     parser.add_argument('-o', '--outdir',
                         help='A directory for storing outputs',
                         default=os.getcwd() + '/database_files')
+    parser.add_argument('-d', '--db_dir',
+                        help='The directory for the database files\nExample:  /path/to/prokka/db/genus',
+                        default=os.getcwd() + '/database_files/db')
     parser.add_argument('-a', '--all_files',
                         help='True if you want to download all files for each strain\nFalse if you only want the necessary files',
                         type=bool,
@@ -47,6 +51,30 @@ def filter_genomes(filtered_genomes, target_taxa):
     return filtered_genomes
 
 
+def make_database(gbffs, outdir, genus_db_path, name):
+
+    call(['mkdir', '-p', outdir])
+    call(['mkdir', '-p', genus_db_path])
+
+    cmd = 'prokka-genbank_to_fasta_db ' + ' '.join(gbffs)
+    p = Popen(cmd.split(), stdout=PIPE, stderr=PIPE, stdin=PIPE)
+    output = p.communicate()[0].decode(encoding='UTF-8')
+
+    cd_hit_out = outdir + '/' + name
+    faa_path = cd_hit_out + '.faa'
+    with open(faa_path, 'w') as f:
+        f.write(output)
+
+    cmd = 'cd-hit -i ' + faa_path + ' -o ' + cd_hit_out + ' -T 0 -M 0 -g 1 -s 0.8 -c 0.9'
+    call(cmd.split())
+
+    cmd = 'makeblastdb -dbtype prot -in ' + cd_hit_out
+    call(cmd.split())
+
+    cmd = 'mv ' + cd_hit_out + '.p* ' + genus_db_path
+    proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+
+
 def main():
     args = make_args()
     taxa_tree = TaxonomyTree()
@@ -72,7 +100,7 @@ def main():
         gbffs.append(dl.gbff)
         break
     NcbiDownload.logout(ftp)
-
+    make_database(gbffs, args.outdir + '/pre_db_files', args.db_dir, args.name)
     print(filtered_genomes.shape)
 
 
