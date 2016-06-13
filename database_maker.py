@@ -5,6 +5,7 @@ import os
 import pandas as pd
 from taxonomy_tree import TaxonomyTree
 from ncbi_download import NcbiDownload
+from ftp_utils import FtpUtils
 import re
 from subprocess import Popen, PIPE, call
 
@@ -88,20 +89,19 @@ def main():
 
     filtered_genomes = filter_genomes(all_genomes, target_taxa)
 
-    ftp = NcbiDownload.login()
+    ftp = FtpUtils.login()
 
     gbffs = list()
     for line, genome in filtered_genomes.iterrows():
         dl = NcbiDownload(re.search('(genomes.*)', genome.ftp_path).group(1),
                           args.outdir + '/' + genome['# assembly_accession'])
         dl.download(ftp, all_files=args.all_files)
-        dl.calc_checksum()
+        FtpUtils.calc_checksum(dl.checksum_file, dl.outdir)
         dl.unzip_gbff()
         gbffs.append(dl.gbff)
         break
-    NcbiDownload.logout(ftp)
+    FtpUtils.logout(ftp)
     make_database(gbffs, args.outdir + '/pre_db_files', args.db_dir, args.name)
-    print(filtered_genomes.shape)
 
 
 if __name__ == '__main__':
