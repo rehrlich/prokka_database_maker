@@ -20,11 +20,15 @@ def make_args():
     parser.add_argument('-o', '--outdir',
                         help='A directory for storing outputs',
                         default=os.getcwd() + '/database_files')
+    parser.add_argument('-a', '--all_files',
+                        help='True if you want to download all files for each strain\nFalse if you only want the necessary files',
+                        type=bool,
+                        default=False)
 
     required_flags = parser.add_argument_group('Required arguments')
 
     required_flags.add_argument('-t', '--taxid',
-                                help='The ncbi taxid for the database',
+                                help='The ncbi taxids for the database',
                                 nargs='+',
                                 type=int,
                                 required=True)
@@ -61,7 +65,7 @@ def main():
     for line, genome in filtered_genomes.iterrows():
         dl = NcbiDownload(re.search('(genomes.*)', genome.ftp_path).group(1),
                           args.outdir + '/' + genome['# assembly_accession'])
-        #dl.download(ftp)
+        dl.download(ftp, all_files=False)
         dl.calc_checksum()
         break
     NcbiDownload.logout(ftp)
