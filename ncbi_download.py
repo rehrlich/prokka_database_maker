@@ -7,7 +7,7 @@ class NcbiDownload:
     def __init__(self, ftp_path, outdir):
         self.ftp_dir = ftp_path
         self.outdir = outdir
-        print(self.outdir)
+        self.gbff = None
 
     @staticmethod
     def login():
@@ -18,6 +18,10 @@ class NcbiDownload:
     @staticmethod
     def logout(ftp):
         ftp.quit()
+
+    def unzip_gbff(self):
+        call(['gunzip', self.gbff])
+        self.gbff = self.gbff.replace('.gbff.gz', '.gbff')
 
     def download(self, ftp, all_files=True):
 
@@ -35,8 +39,12 @@ class NcbiDownload:
                     ncbi_filename.endswith('gbff.gz')):
                 if 'assembly_structure' not in ncbi_filename:
 
-                    with open(self.outdir + '/' + ncbi_filename, "wb") as lf:
+                    local_file = self.outdir + '/' + ncbi_filename
+                    with open(local_file, "wb") as lf:
                         ftp.retrbinary("RETR " + ncbi_filename, lf.write, 8*1024)
+
+                    if local_file.endswith('.gbff.gz'):
+                        self.gbff = local_file
 
     def calc_checksum(self):
         with open(self.outdir + '/md5checksums.txt') as f:

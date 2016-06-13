@@ -62,11 +62,14 @@ def main():
 
     ftp = NcbiDownload.login()
 
+    gbffs = list()
     for line, genome in filtered_genomes.iterrows():
         dl = NcbiDownload(re.search('(genomes.*)', genome.ftp_path).group(1),
                           args.outdir + '/' + genome['# assembly_accession'])
-        dl.download(ftp, all_files=False)
+        dl.download(ftp, all_files=args.all_files)
         dl.calc_checksum()
+        dl.unzip_gbff()
+        gbffs.append(dl.gbff)
         break
     NcbiDownload.logout(ftp)
 
