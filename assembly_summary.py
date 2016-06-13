@@ -6,7 +6,7 @@ class AssemblySummary:
         self.outdir = outdir
         self.summ_file = self.outdir + '/assembly_summary.txt'
         self.download_summary(ftp)
-        self.genomes = pd.read_csv('refs/assembly_summary.txt',
+        self.genomes = pd.read_csv(self.summ_file,
                                    sep='\t', skiprows=1)
 
     def download_summary(self, ftp):

@@ -68,7 +68,7 @@ def make_database(gbffs, outdir, genus_db_path, name):
 def main():
     args = make_args()
     ftp = FtpUtils.login()
-    
+
     taxa_tree = TaxonomyTree(args.outdir + '/taxonomy', ftp)
     target_taxa = set()
     for taxid in args.taxid:
