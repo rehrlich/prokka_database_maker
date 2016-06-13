@@ -78,7 +78,8 @@ def make_database(gbffs, outdir, genus_db_path, name):
 
 def main():
     args = make_args()
-    taxa_tree = TaxonomyTree()
+    ftp = FtpUtils.login()
+    taxa_tree = TaxonomyTree(args.outdir + '/taxonomy', ftp)
 
     target_taxa = set()
     for taxid in args.taxid:
@@ -89,11 +90,10 @@ def main():
 
     filtered_genomes = filter_genomes(all_genomes, target_taxa)
 
-    ftp = FtpUtils.login()
 
     gbffs = list()
     for line, genome in filtered_genomes.iterrows():
-        dl = NcbiDownload(re.search('(genomes.*)', genome.ftp_path).group(1),
+        dl = NcbiDownload(re.search('(/genomes.*)', genome.ftp_path).group(1),
                           args.outdir + '/' + genome['# assembly_accession'])
         dl.download(ftp, all_files=args.all_files)
         FtpUtils.calc_checksum(dl.checksum_file, dl.outdir)
