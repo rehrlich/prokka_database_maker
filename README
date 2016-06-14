@@ -4,21 +4,7 @@ This is a tool for creating genus databases for Prokka.  The main input is a lis
 Requirements:
 python 3.5
 pandas
-Prokka
-
-Installing Prokka:
-Instructions are here:  https://github.com/tseemann/prokka#dependencies
-You only need to be able to use prokka-genbank_to_fasta_db, cd-hit, and makeblastdb so you may not have to install everything.
-
-Installing python:
-The easy way to install python is to use Anaconda.  This will download a lot of things you don't need right now.  Go to https://www.continuum.io/downloads and follow the instructions for pythonn 3.5 for linux.
-
-The slightly more difficult way is to use Miniconda which is like Anaconda but doesn't include the stuff you don't need.  Go to http://conda.pydata.org/miniconda.html and follow the instructions for pythonn 3.5 for linux.  After installing go to the command line and type:
-conda install pandas
-
-If you don't want another package manager and just want python you can download it at https://www.python.org/downloads.  Install pandas by typing:
-pip install pandas
-It has some dependencies.  pip install should help with that.
+Prokka https://github.com/tseemann/prokka
 
 
 Usage:
@@ -56,4 +42,19 @@ Usage as a batch download tool:
 Set '-a True' to use.
 This program can be used to download all files associated with an assembly.  ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/bacteria/Escherichia_coli/all_assembly_versions/GCA_000005845.2_ASM584v2 is an example of all of the files from an assembly.  Files (and directories) containing the phrase 'assembly_structure' will not be downloaded for legacy reasons related to symbolic links in the ncbi file structure.  If you need them, open an issue and include an ftp path that includes those files.
 Prokka is not required to use this as a batch download tool.  The creation of the Prokka database is the final step of the program so it won't hurt anything when it fails.
+
+
+Installing Prokka:
+Instructions are here:  https://github.com/tseemann/prokka
+You only need to be able to use prokka-genbank_to_fasta_db, cd-hit, and makeblastdb so you may not have to install everything.
+
+Installing python:
+The easy way to install python is to use Anaconda.  This will download a lot of things you don't need right now.  Go to https://www.continuum.io/downloads and follow the instructions for pythonn 3.5 for linux.
+
+The slightly more difficult way is to use Miniconda which is like Anaconda but doesn't include the stuff you don't need.  Go to http://conda.pydata.org/miniconda.html and follow the instructions for pythonn 3.5 for linux.  After installing go to the command line and type:
+conda install pandas
+
+If you don't want another package manager and just want python you can download it at https://www.python.org/downloads.  Install pandas by typing:
+pip install pandas
+It has some dependencies.  pip install should help with that.
 
