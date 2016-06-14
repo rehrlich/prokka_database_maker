@@ -2,7 +2,15 @@ from subprocess import call
 
 
 class NcbiDownload:
+    """
+    Files related to an ncbi genome assembly
+    """
     def __init__(self, ftp_path, outdir):
+        """
+        :param ftp_path: The path to the directory with the assembly's files
+        :param outdir: directory to store all downloaded files
+        :return:
+        """
         self.ftp_dir = ftp_path
         self.outdir = outdir
         self.gbff = None
@@ -13,6 +21,12 @@ class NcbiDownload:
         self.gbff = self.gbff.replace('.gbff.gz', '.gbff')
 
     def download(self, ftp, all_files=True):
+        """
+        :param ftp: an ftp connection to ncbi
+        :param all_files:
+        True - download everything except assembly structure files
+        False - only download gbff and checksum files
+        """
         ftp.cwd(self.ftp_dir)
 
         listing = []

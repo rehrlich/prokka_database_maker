@@ -17,7 +17,9 @@ class FtpUtils:
     @staticmethod
     def calc_checksum(checksum_file, local_dir):
         """
-        :param checksum_file: local path to the checksum file
+        Checks the md5 for all downloaded files from checksum_file.  Raises an
+        error if any are wrong.
+        :param checksum_file: local path to a checksum file from ncbi
         :param local_dir: directory containing some or all of the files listed
         in checksum_file
         """
@@ -28,7 +30,7 @@ class FtpUtils:
                 if not os.path.isfile(file_name):
                     continue
 
-                expected_md5 = line.split()[0]
+                expected_md5 = split_line[0]
                 observed_md5 = check_output(['md5sum', file_name]).decode("utf-8").split()[0]
 
                 if expected_md5 != observed_md5:

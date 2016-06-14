@@ -2,12 +2,12 @@
 
 import argparse
 import os
+import re
+from subprocess import Popen, PIPE, call
 from assembly_summary import AssemblySummary
 from taxonomy_tree import TaxonomyTree
 from ncbi_download import NcbiDownload
 from ftp_utils import FtpUtils
-import re
-from subprocess import Popen, PIPE, call
 
 
 def make_args():
@@ -42,7 +42,13 @@ def make_args():
 
 
 def make_database(gbffs, outdir, genus_db_path, name):
-
+    """
+    Creates a Prokka genus database
+    :param gbffs: a list of paths to gbff files
+    :param outdir: directory to store intermediate files
+    :param genus_db_path: the directory to store the database files
+    :param name: a name for the database files
+    """
     call(['mkdir', '-p', outdir])
     call(['mkdir', '-p', genus_db_path])
 
