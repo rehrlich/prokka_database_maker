@@ -16,21 +16,21 @@ def make_args():
         add_help=True,
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
+    parser.add_argument('-d', '--db_dir',
+                        help='The directory for the database files\nExample:  /path/to/prokka/db/genus',
+                        default=os.getcwd() + '/database_files/db')
     parser.add_argument('-n', '--name',
                         help='A name for the genus database',
                         default='new_genus_database')
     parser.add_argument('-o', '--outdir',
-                        help='A directory for storing outputs',
+                        help='A directory for storing intermediate outputs',
                         default=os.getcwd() + '/database_files')
-    parser.add_argument('-d', '--db_dir',
-                        help='The directory for the database files\nExample:  /path/to/prokka/db/genus',
-                        default=os.getcwd() + '/database_files/db')
     parser.add_argument('-a', '--all_files',
                         help='True if you want to download all files for each strain\nFalse if you only want the necessary files',
                         type=bool,
                         default=False)
 
-    required_flags = parser.add_argument_group('Required arguments')
+    required_flags = parser.add_argument_group('Required argument')
 
     required_flags.add_argument('-t', '--taxid',
                                 help='The ncbi taxids for the database',
@@ -68,7 +68,7 @@ def make_database(gbffs, outdir, genus_db_path, name):
     call(cmd.split())
 
     cmd = 'mv ' + cd_hit_out + '.p* ' + genus_db_path
-    proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+    Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
 
 
 def main():
@@ -91,7 +91,6 @@ def main():
         FtpUtils.calc_checksum(dl.checksum_file, dl.outdir)
         dl.unzip_gbff()
         gbffs.append(dl.gbff)
-        break
 
     FtpUtils.logout(ftp)
 
