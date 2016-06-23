@@ -7,12 +7,10 @@ pandas
 Prokka https://github.com/tseemann/prokka
 
 
-Usage:
-python database_maker.py [-h] [-d DB_DIR] [-n NAME] [-o OUTDIR] [-a ALL_FILES] -t TAXID [TAXID ...]
+Usage: database_maker.py [-h] [-d DB_DIR] [-n NAME] [-o OUTDIR] [-a ALL_FILES]
+                         [-i INCLUDE_INCOMPLETE] -t TAXID [TAXID ...]
 
-Required argument:
-  -t TAXID [TAXID ...], --taxid TAXID [TAXID ...]
-                        The ncbi taxids for the database (default: None)
+Create a genus database for use with Prokka
 
 Optional arguments:
   -h, --help            show this help message and exit
@@ -30,17 +28,26 @@ Optional arguments:
                         True if you want to download all files for each strain
                         False if you only want the necessary files (default:
                         False)
+  -i INCLUDE_INCOMPLETE, --include_incomplete INCLUDE_INCOMPLETE
+                        True if you want to download all genomes, False if you
+                        only want complete genome (default: False)
+
+Required argument:
+  -t TAXID [TAXID ...], --taxid TAXID [TAXID ...]
+                        The ncbi taxids for the database (default: None)
+
 
 Detailed explanation of arguments:
 DB_DIR - This is where the final database files will be stored.  In order to be used by Prokka, the files will eventually need to be in /path/to/prokka/db/genus, but you can move them manually later.
 NAME - This is the name of the database.  When using the database with Prokka, this will be the argument to --genus.  Remember to also set the --usegenus flag.
-ALL_FILES - Set this to True to use the progmram as a batch download tool.
+ALL_FILES - Set this to True to use the progmram as a batch download tool.  It will only download the current assemblies.
+INCLUDE_INCOMPLETE - I set this to False when creating a Prokka database unless there aren't many complete genomes.  Setting this to True will only download the current assemblies.
 TAXID - This is a list of ncbi taxonomy ids.  This is a good tool for looking up ncbi taxonomy id's http://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi.  At least one taxonomy id is required so '-t 1' is valid and so is '-t 1 2'
 
 
 Usage as a batch download tool:
 Set '-a True' to use.
-This program can be used to download all files associated with an assembly.  ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/bacteria/Escherichia_coli/all_assembly_versions/GCA_000005845.2_ASM584v2 is an example of all of the files from an assembly.  Files (and directories) containing the phrase 'assembly_structure' will not be downloaded for legacy reasons related to symbolic links in the ncbi file structure.  If you need them, open an issue and include an ftp path that includes those files.
+This program can be used to download all files associated with the latest version of an assembly.  ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/bacteria/Escherichia_coli/all_assembly_versions/GCA_000005845.2_ASM584v2 is an example of all of the files from an assembly.  Files (and directories) containing the phrase 'assembly_structure' will not be downloaded for legacy reasons related to symbolic links in the ncbi file structure.  If you need them, open an issue and include an ftp path that includes those files.
 Prokka is not required to use this as a batch download tool.  The creation of the Prokka database is the final step of the program so it won't hurt anything when it fails.
 
 

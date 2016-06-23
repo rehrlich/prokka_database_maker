@@ -29,6 +29,10 @@ def make_args():
                         help='True if you want to download all files for each strain\nFalse if you only want the necessary files',
                         type=bool,
                         default=False)
+    parser.add_argument('-i', '--include_incomplete',
+                        help='True if you want to download all genomes, False if you only want complete genome',
+                        type=bool,
+                        default=False)
 
     required_flags = parser.add_argument_group('Required argument')
 
@@ -81,7 +85,7 @@ def main():
         target_taxa.update(taxa_tree.get_consistent_below(str(taxid)))
 
     all_genomes = AssemblySummary(args.outdir, ftp)
-    filtered_genomes = all_genomes.filter_genomes(target_taxa)
+    filtered_genomes = all_genomes.filter_genomes(target_taxa, args)
 
     gbffs = list()
     for line, genome in filtered_genomes.iterrows():

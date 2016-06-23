@@ -22,9 +22,9 @@ class AssemblySummary:
         ftp.cwd('/genomes/genbank/bacteria')
 
         with open(self.summ_file, "wb") as lf:
-            ftp.retrbinary("RETR assembly_summary.txt", lf.write, 8*1024)
+            ftp.retrbinary("RETR assembly_summary.txt", lf.write, 8 * 1024)
 
-    def filter_genomes(self, target_taxa):
+    def filter_genomes(self, target_taxa, args):
         """
         Filters the assembly summary dataframe for complete genomes that are the
         latest version for a strain and have a taxonomy id in target_taxa.
@@ -32,8 +32,10 @@ class AssemblySummary:
         :return: the filtered dataframe
         """
         filtered_genomes = self.genomes.copy()
-        filtered_genomes = filtered_genomes[
-            filtered_genomes['assembly_level'] == 'Complete Genome']
+        if not args.include_incomplete:
+            filtered_genomes = filtered_genomes[
+                filtered_genomes['assembly_level'] == 'Complete Genome']
+
         filtered_genomes = filtered_genomes[
             filtered_genomes['version_status'] == 'latest']
         filtered_genomes = filtered_genomes[
