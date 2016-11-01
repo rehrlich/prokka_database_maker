@@ -4,6 +4,7 @@ import argparse
 import os
 import re
 from subprocess import Popen, PIPE, call
+
 from assembly_summary import AssemblySummary
 from taxonomy_tree import TaxonomyTree
 from ncbi_download import NcbiDownload
@@ -26,13 +27,14 @@ def make_args():
                         help='A directory for storing intermediate outputs',
                         default=os.getcwd() + '/database_files')
     parser.add_argument('-a', '--all_files',
-                        help='True if you want to download all files for each strain\nFalse if you only want the necessary files',
-                        type=bool,
-                        default=False)
+                        help="Use -a if you want to download all files, don't "
+                             "use it if you only want the files for the genus database",
+                        default=False,
+                        action="store_true")
     parser.add_argument('-i', '--include_incomplete',
-                        help='True if you want to download all genomes, False if you only want complete genome',
-                        type=bool,
-                        default=False)
+                        help="Use -i if you want incomplete genomes, don't use it if you don't.",
+                        default=False,
+                        action="store_true")
 
     required_flags = parser.add_argument_group('Required argument')
 
